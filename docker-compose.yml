@@ -1,0 +1,16 @@
+version: '3.8'
+services:
+  orchestrator:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      - NLU_PROVIDER=keyword
+  calendar:
+    build: ./examples/agents/calendar
+    ports:
+      - "8081:8081"
+  todo:
+    build: ./examples/agents/todo
+    ports:
+      - "8082:8082"
