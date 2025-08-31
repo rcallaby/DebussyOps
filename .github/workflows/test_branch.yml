@@ -1,0 +1,32 @@
+name: Protect Test Branch
+
+on:
+  schedule:
+    - cron: "30 6 * * *"   # Runs day at 6:30 AM UTC
+  workflow_dispatch:       # Allow manual trigger
+  delete:                  # Detect branch deletions
+
+jobs:
+  protect-test:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Check if test branch exists
+        id: check
+        run: |
+          if git ls-remote --exit-code origin test; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Recreate test branch if missing
+        if: steps.check.outputs.exists == 'false'
+        run: |
+          git clone --depth=1 https://github.com/${{ github.repository }} repo
+          cd repo
+          git checkout main   # or whichever branch you want as base
+          git checkout -b test
+          git push origin test
