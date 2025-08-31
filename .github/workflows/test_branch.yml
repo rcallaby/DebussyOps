@@ -1,32 +1,31 @@
-name: Protect Test Branch
+name: Recreate Test Branch
 
 on:
   schedule:
-    - cron: "30 6 * * *"   # Runs day at 6:30 AM UTC
-  workflow_dispatch:       # Allow manual trigger
-  delete:                  # Detect branch deletions
+    # Runs at 6:30 AM UTC every day
+    - cron: '30 6 * * *'
 
 jobs:
-  protect-test:
+  recreate_test_branch:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-
     steps:
-      - name: Check if test branch exists
-        id: check
-        run: |
-          if git ls-remote --exit-code origin test; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          # This is necessary to fetch all history and branches
+          fetch-depth: 0
 
-      - name: Recreate test branch if missing
-        if: steps.check.outputs.exists == 'false'
+      - name: Recreate test branch if it doesn't exist
+        # This step checks if the remote 'test' branch exists.
+        # The '|| true' allows the command to fail without stopping the workflow,
+        # which is expected if the branch doesn't exist.
+        # The 'test' branch is created from 'main' and then pushed to the remote.
         run: |
-          git clone --depth=1 https://github.com/${{ github.repository }} repo
-          cd repo
-          git checkout main   # or whichever branch you want as base
-          git checkout -b test
-          git push origin test
+          if git ls-remote --heads origin test | grep -q 'refs/heads/test'; then
+            echo "The 'test' branch already exists. No action needed."
+          else
+            echo "The 'test' branch does not exist. Recreating it from 'main'."
+            git branch test
+            git push origin test
+            echo "Successfully recreated the 'test' branch."
+          fi
