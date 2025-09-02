@@ -68,7 +68,7 @@ func (a *TodoAgent) CanHandle(req *AgentRequest) bool {
 func (a *TodoAgent) Handle(req *AgentRequest) (string, error) {
     // Example: Add a task
     task := req.Parameters["task"]
-    return fmt.Sprintf("Task '%s' added to your list ✅", task), nil
+    return fmt.Sprintf("Task '%s' added to your list ", task), nil
 }
 ```
 
@@ -137,7 +137,7 @@ func TestTodoAgent(t *testing.T) {
         t.Fatal(err)
     }
 
-    expected := "Task 'Buy milk' added to your list ✅"
+    expected := "Task 'Buy milk' added to your list "
     if resp != expected {
         t.Errorf("expected %q, got %q", expected, resp)
     }
