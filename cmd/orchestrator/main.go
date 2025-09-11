@@ -11,7 +11,6 @@ import (
 	"github.com/example/orchestrator-template/internal/nlu"
 	"github.com/example/orchestrator-template/internal/nlu/providers"
 	"github.com/example/orchestrator-template/internal/orchestrator"
-	"github.com/example/orchestrator-template/internal/router"
 	"github.com/example/orchestrator-template/internal/agent/client"
 	"github.com/example/orchestrator-template/pkg/config"
 )

@@ -44,7 +44,7 @@ func main() {
 			w.WriteHeader(400)
 			w.Write([]byte("unknown action"))
 		}
-	})
+	))
 
 	log.Fatal(http.ListenAndServe(":8081", nil))
 }
