@@ -7,7 +7,7 @@ This document describes the runtime flow, components, data contracts, configurat
 
 ---
 
-## 1) High-level Overview
+## High-level Overview
 
 * Clients send a POST request to the **Orchestrator** (`/v1/query`) with free-text input.
 * The orchestrator calls an **NLU provider** to parse the text into a structured `AgentRequest`.
@@ -36,7 +36,7 @@ Orchestrator returns only the inner `response` JSON map to caller
 
 ---
 
-## 2) Repository Layout (as scaffolded)
+## Repository Layout 
 
 ```
 .
@@ -74,7 +74,7 @@ Orchestrator returns only the inner `response` JSON map to caller
 
 ---
 
-## 3) Components & Responsibilities
+## Components & Responsibilities
 
 ### 3.1 Orchestrator entrypoint
 
@@ -99,8 +99,6 @@ Orchestrator returns only the inner `response` JSON map to caller
 * Implementation detail:
 
   * It sets local variables `start` and `log` and assigns to `_` to avoid unused warnings; there is no current latency metric.
-
-> **Accuracy note:** `main.go` imports `internal/router`, but there is **no** `internal/router` package in this scaffold, and it is not used. The import should be removed to compile cleanly.
 
 ---
 
@@ -240,7 +238,7 @@ Minimal env loader (no Viper in this scaffold):
 
 ---
 
-## 4) Public HTTP API (current)
+## Public HTTP API (current)
 
 ### Orchestrator
 
@@ -281,7 +279,7 @@ Minimal env loader (no Viper in this scaffold):
 
 ---
 
-## 5) Build & Runtime
+## Build & Runtime
 
 * **Makefile**
 
@@ -293,11 +291,9 @@ Minimal env loader (no Viper in this scaffold):
   * Declares three services (`orchestrator`, `calendar`, `todo`) and maps ports 8080/8081/8082.
   * Sets `NLU_PROVIDER=keyword` for orchestrator.
 
-> **Accuracy note:** `docker-compose.yml` points `build` at `./examples/agents/calendar` and `./examples/agents/todo`, but **those directories have no Dockerfiles** in this scaffold. Add minimal Dockerfiles there or adjust compose to use the root image and override entrypoints.
-
 ---
 
-## 6) Control Flow (Step-by-step)
+## Control Flow (Step-by-step)
 
 1. Client → Orchestrator `/v1/query` (POST).
 2. Orchestrator → NLU (`Parse(input)`) → `AgentRequest{Agent, Action, Payload}`.
@@ -308,7 +304,7 @@ Minimal env loader (no Viper in this scaffold):
 
 ---
 
-## 7) Extensibility Points (present, not hypothetical)
+## Extensibility Points (present, not hypothetical)
 
 * **Add NLU providers**: implement `nlu.NLU` and update the `switch` in `cmd/orchestrator/main.go` to instantiate it (and optionally extend env selection).
 * **Add agents (HTTP services)**:
@@ -332,7 +328,7 @@ No database, message queue, or metrics libraries are included in the scaffold.
 
 ---
 
-## 9) Non-Goals / Not Implemented (by design in this scaffold)
+## Non-Goals / Not Implemented (by design in this scaffold)
 
 * Authentication/Authorization
 * Persistent storage
@@ -364,7 +360,7 @@ No database, message queue, or metrics libraries are included in the scaffold.
 
 ---
 
-## 11) Security & Production Hardening (not present; recommended later)
+## Security & Production Hardening (not present; recommended later)
 
 * TLS, auth (mTLS/JWT), input validation beyond keyword checks
 * Request timeouts and context propagation end-to-end
@@ -376,7 +372,7 @@ No database, message queue, or metrics libraries are included in the scaffold.
 
 ---
 
-## 12) Example Requests
+## Example Requests
 
 Create an event (keyword NLU → calendar):
 
