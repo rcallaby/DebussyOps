@@ -1,6 +1,5 @@
 # DebussyOps
 
-
 A provider-agnostic, extensible Master Orchestrator template in Go that coordinates modular sub-agents with plugin support and natural language understanding for both personal and business automation.
 
 This repository is a scaffold for an extensible AI Orchestrator. Use it as a starting point to build domain-specific orchestrators (personal life, business automation, etc.).
