@@ -1,9 +1,34 @@
 package plugins
 
-// Plugin loader stub. For advanced use you can implement Go plugin loading or a gRPC-based plugin system.
-// This file is intentionally left as a template for plugin patterns.
+import (
+	"plugin"
+	"path/filepath"
+)
 
-// Suggested approaches:
-// - Use Go plugins (.so) for unix builds (plugin package) - limited portability.
-// - Use gRPC/HTTP to connect to external agent services (recommended).
-// - Use a plugin registry (signed manifests) to discover remote agents.
+// PluginLoader handles dynamic loading of plugins
+type PluginLoader struct {
+	pluginDir string
+}
+
+// NewPluginLoader creates a new plugin loader instance
+func NewPluginLoader(dir string) *PluginLoader {
+	return &PluginLoader{
+		pluginDir: dir,
+	}
+}
+
+// LoadPlugin loads a plugin from the specified path
+func (p *PluginLoader) LoadPlugin(name string) (plugin.Symbol, error) {
+	path := filepath.Join(p.pluginDir, name+".so")
+	plug, err := plugin.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	
+	symbol, err := plug.Lookup("Plugin")
+	if err != nil {
+		return nil, err
+	}
+	
+	return symbol, nil
+}
